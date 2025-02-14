@@ -1,30 +1,60 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
-using Silk.NET.Core;
-using Silk.NET.OpenGL;
-using Silk.NET.Windowing;
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Input;
+using Project1.Geometry;
 
 
 namespace VoxelTest
 {
-    public class Game
+    public class Game : GameWindow
     {
-        private static IWindow _window;
-        private static GL _gl;
-        static void Main(string[] args)
+        public Game()
+            : base(800, 600, GraphicsMode.Default, "Voxel Test", GameWindowFlags.Default, DisplayDevice.Default, 3, 3, GraphicsContextFlags.Debug)
         {
-            var options = WindowOptions.Default;
-            Console.WriteLine("Hello World!");
-            options.Title = "Voxel Test";   
-            options.Size = new Silk.NET.Maths.Vector2D<int>(800, 600);
-            options.API = new GraphicsAPI(ContextAPI.OpenGL, ContextProfile.Core, ContextFlags.Debug, new APIVersion(3, 3));
+        }
 
-            _window = Window.Create(options);
-            _window.Run();
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            GL.ClearColor(Color4.CornflowerBlue);
+            Console.WriteLine("GAME::OnLoad Called");
+        }
+
+        protected override void OnUpdateFrame(FrameEventArgs e)
+        {
+            base.OnUpdateFrame(e);
+            Console.WriteLine("GAME::OnUpdate Called");
+
+            var input = Keyboard.GetState();
+            if (input.IsKeyDown(Key.Escape))
+            {
+                Exit();
+            }
+        }
+
+        protected override void OnRenderFrame(FrameEventArgs e)
+        {
+            base.OnRenderFrame(e);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            Console.WriteLine("GAME::OnRender Called");
+            SwapBuffers();
+        }
+
+        protected override void OnKeyDown(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            Console.WriteLine("GAME::KeyDown Called");
+        }
+
+        [STAThread]
+        public static void Main(string[] args)
+        {
+            using (var game = new Game())
+            {
+                game.Run(60.0);
+            }
         }
     }
 }
